@@ -1,5 +1,4 @@
-﻿using SharpCompress.Archives.Tar;
-using SharpCompress.Common;
+﻿using SharpCompress.Common;
 using SharpCompress.Writers;
 using System.IO;
 using SharpCompress.Compressors.Deflate;
@@ -9,6 +8,10 @@ using java.io;
 
 using File = System.IO.File;
 using org.apache.commons.compress.utils;
+using ICSharpCode.SharpZipLib.Tar;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace NetTux
 {
@@ -34,11 +37,12 @@ namespace NetTux
 
         public static void WriteTarGzArchive(string output, string[] inputs, string baseDir = null, string prefixDir = null)
         {
+            var dirs = new HashSet<string>();
             if (baseDir != null)
                 baseDir = Path.GetFullPath(baseDir);
             using (var stream = File.Create(output))
             using (var gzip = new GZipStream(stream, CompressionMode.Compress, CompressionLevel.BestCompression))
-            using (var tar = TarArchive.Create())
+            using (var tar = new TarOutputStream(gzip))
             {
                 foreach (var file in inputs)
                 {
@@ -48,12 +52,44 @@ namespace NetTux
                         name = Path.GetFullPath(file).Replace(baseDir, "").TrimStart(Path.DirectorySeparatorChar);
                     if (prefixDir != null)
                         name = Path.Combine(prefixDir, name);
+                    EnsureDirectories(name, dirs, tar);
                     var source = File.OpenRead(file);
                     var size = info.Length;
                     var modified = info.LastWriteTime;
-                    tar.AddEntry(name, source, true, size, modified);
+                    var entry = TarEntry.CreateEntryFromFile(file);
+                    var header = entry.TarHeader;
+                    header.Name = name;
+                    header.Size = size;
+                    header.ModTime = modified;
+                    entry.TarHeader.Mode = Convert.ToInt32("100" + "644", 8); // TODO
+                    tar.PutNextEntry(entry);
+                    using (source)
+                        source.CopyTo(tar);
+                    tar.CloseEntry();
                 }
-                tar.SaveTo(gzip, new WriterOptions(CompressionType.None));
+            }
+        }
+
+        static void EnsureDirectories(string name, ICollection<string> dirs, TarOutputStream tar)
+        {
+            var root = Path.GetDirectoryName(name);
+            var parts = root.Split(Path.DirectorySeparatorChar);
+            var path = new StringBuilder();
+            for (var i = 0; i < parts.Length; i++)
+            {
+                var part = parts[i];
+                if (i != 0)
+                    path.Append(Path.DirectorySeparatorChar);
+                path.Append(part);
+                var current = path.ToString();
+                if (dirs.Contains(current))
+                    continue;
+                dirs.Add(current);
+                // var entry = TarEntry.CreateTarEntry(current);
+                // TarEntry.NameTarHeader(entry.TarHeader, current);
+                // entry.TarHeader.Mode = Convert.ToInt32("000" + "777", 8); // TODO
+                // tar.PutNextEntry(entry);
+                // tar.CloseEntry();
             }
         }
     }

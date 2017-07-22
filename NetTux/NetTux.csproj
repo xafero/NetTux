@@ -36,6 +36,10 @@
     <Reference Include="commons-compress-1.14">
       <HintPath>..\lib\commons-compress-1.14.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.6375.31400, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.SharpZipLib.Stripped.0.87.20170615.10\lib\net40\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="IKVM.OpenJDK.Core">
       <HintPath>..\lib\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>

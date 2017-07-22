@@ -31,7 +31,7 @@ namespace NetTux
             // Write data stuff
             var dataTgz = Path.Combine(temp, "data.tar.gz");
             var dataFiles = Directory.GetFiles(config.BuildDirectory, "*.*", SearchOption.AllDirectories);
-            var installRoot = Path.Combine("opt", config.PkgName.ToLowerInvariant());
+            var installRoot = Path.Combine(".", "opt", config.PkgName.ToLowerInvariant());
             WriteTarGzArchive(dataTgz, dataFiles, config.BuildDirectory, installRoot);
             // Collect control stuff
             var control = Path.Combine(temp, "control");
