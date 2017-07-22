@@ -35,40 +35,46 @@ namespace NetTux
             }
         }
 
-        public static void WriteTarGzArchive(string output, string[] inputs, string baseDir = null, string prefixDir = null)
+        public static void WriteTarGzArchive(string output, params TarInput[] bunches)
         {
             var dirs = new HashSet<string>();
-            if (baseDir != null)
-                baseDir = Path.GetFullPath(baseDir);
             using (var stream = File.Create(output))
             using (var gzip = new GZipStream(stream, CompressionMode.Compress, CompressionLevel.BestCompression))
             using (var tar = new TarOutputStream(gzip))
             {
-                foreach (var file in inputs)
+                foreach (var bunch in bunches)
                 {
-                    var info = new FileInfo(file);
-                    var name = info.Name;
+                    var baseDir = bunch.BaseDir;
+                    var prefixDir = bunch.InstallDir;
+                    var inputs = bunch.Files;
                     if (baseDir != null)
-                        name = Path.GetFullPath(file).Replace(baseDir, "").TrimStart(Path.DirectorySeparatorChar);
-                    if (prefixDir != null)
-                        name = Path.Combine(prefixDir, name);
-                    EnsureDirectories(name, dirs, tar);
-                    var source = File.OpenRead(file);
-                    var size = info.Length;
-                    var modified = info.LastWriteTime;
-                    var entry = TarEntry.CreateEntryFromFile(file);
-                    var header = entry.TarHeader;
-                    header.Name = name;
-                    header.Size = size;
-                    header.ModTime = modified;
-                    header.GroupName = "root";
-                    header.UserName = "root";
-                    var exe = info.Name == "postinst" || info.Name == "postrm";
-                    entry.TarHeader.Mode = Convert.ToInt32("100" + (exe ? "755" : "644"), 8);
-                    tar.PutNextEntry(entry);
-                    using (source)
-                        source.CopyTo(tar);
-                    tar.CloseEntry();
+                        baseDir = Path.GetFullPath(baseDir);
+                    foreach (var file in inputs)
+                    {
+                        var info = new FileInfo(file);
+                        var name = info.Name;
+                        if (baseDir != null)
+                            name = Path.GetFullPath(file).Replace(baseDir, "").TrimStart(Path.DirectorySeparatorChar);
+                        if (prefixDir != null)
+                            name = Path.Combine(prefixDir, name);
+                        EnsureDirectories(name, dirs, tar);
+                        var source = File.OpenRead(file);
+                        var size = info.Length;
+                        var modified = info.LastWriteTime;
+                        var entry = TarEntry.CreateEntryFromFile(file);
+                        var header = entry.TarHeader;
+                        header.Name = name;
+                        header.Size = size;
+                        header.ModTime = modified;
+                        header.GroupName = "root";
+                        header.UserName = "root";
+                        var exe = info.Name == "postinst" || info.Name == "postrm";
+                        entry.TarHeader.Mode = Convert.ToInt32("100" + (exe ? "755" : "644"), 8);
+                        tar.PutNextEntry(entry);
+                        using (source)
+                            source.CopyTo(tar);
+                        tar.CloseEntry();
+                    }
                 }
             }
         }

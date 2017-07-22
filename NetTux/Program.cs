@@ -31,8 +31,27 @@ namespace NetTux
             // Write data stuff
             var dataTgz = Path.Combine(temp, "data.tar.gz");
             var dataFiles = Directory.GetFiles(config.BuildDirectory, "*.*", SearchOption.AllDirectories);
-            var installRoot = Path.Combine(".", "opt", config.PkgName.ToLowerInvariant());
-            WriteTarGzArchive(dataTgz, dataFiles, config.BuildDirectory, installRoot);
+            var lowerPkgName = config.PkgName.ToLowerInvariant();
+            var installRoot = Path.Combine(".", "opt", lowerPkgName);
+            var dataStuff = new TarInput
+            {
+                Files = dataFiles,
+                InstallDir = installRoot,
+                BaseDir = config.BuildDirectory
+            };
+            // Write meta stuff
+            var docRoot = Path.Combine(".", "usr", "share", "doc", lowerPkgName);
+            var copyright = Path.Combine(temp, "copyright");
+            Debian.WriteScript(copyright, config, enc, new[]
+            {
+                ""
+            });
+            var metaStuff = new TarInput
+            {
+                Files = new[] { copyright },
+                InstallDir = docRoot,
+            };
+            WriteTarGzArchive(dataTgz, metaStuff, dataStuff);
             // Collect control stuff
             var control = Path.Combine(temp, "control");
             Debian.WriteControl(control, config, enc);
@@ -56,7 +75,11 @@ namespace NetTux
             });
             // Write control bundle
             var controlTgz = Path.Combine(temp, "control.tar.gz");
-            WriteTarGzArchive(controlTgz, new[] { control, md5sums, postinst, postrm });
+            WriteTarGzArchive(controlTgz, new TarInput
+            {
+                Files = new[] { control, md5sums, postinst, postrm },
+                InstallDir = Path.Combine(".")
+            });
             // Write version
             var binaryFile = Path.Combine(temp, "debian-binary");
             File.WriteAllText(binaryFile, "2.0" + '\n', enc);
