@@ -14,5 +14,7 @@ namespace NetTux
         public string Description { get; set; }
 
         public string AppTemp { get; set; }
+
+        public string BuildDirectory { get; set; }
     }
 }
