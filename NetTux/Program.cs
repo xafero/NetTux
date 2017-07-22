@@ -7,6 +7,7 @@ using System.Text;
 using static NetTux.Archiver;
 
 using File = System.IO.File;
+using System.Collections.Generic;
 
 namespace NetTux
 {
@@ -42,10 +43,7 @@ namespace NetTux
             // Write meta stuff
             var docRoot = Path.Combine(".", "usr", "share", "doc", lowerPkgName);
             var copyright = Path.Combine(temp, "copyright");
-            Debian.WriteScript(copyright, config, enc, new[]
-            {
-                ""
-            });
+            Debian.WriteScript(copyright, config, enc, GenerateCopyright(config));
             var metaStuff = new TarInput
             {
                 Files = new[] { copyright },
@@ -88,6 +86,20 @@ namespace NetTux
             WriteArFile(debFile, binaryFile, controlTgz, dataTgz);
             // Done
             return 0;
+        }
+
+        static IEnumerable<string> GenerateCopyright(TuxConfig config)
+        {
+            return new[]
+            {
+                "Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/",
+                $"Upstream-Name: {config.PkgName}",
+                $"Source: {config.Homepage}",
+                "",
+                "Files: *",
+                $"Copyright: 2017 {config.Maintainer}",
+                "License: Proprietary"
+            };
         }
     }
 }
