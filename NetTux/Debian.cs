@@ -21,9 +21,10 @@ namespace NetTux
             File.WriteAllLines(path, lines, enc);
         }
 
-        public static void WriteScript(string path, TuxConfig config, Encoding enc)
+        public static void WriteScript(string path, TuxConfig config, Encoding enc, IEnumerable<string> lines)
         {
-            File.WriteAllText(path, "", enc);
+            var text = string.Join('\n' + "", lines);
+            File.WriteAllText(path, text, enc);
         }
 
         public static void WriteHashes(string path, TuxConfig config, Encoding enc)

@@ -32,7 +32,7 @@ namespace NetTux
             }
         }
 
-        public static void WriteTarGzArchive(string output, string[] inputs, string baseDir = null)
+        public static void WriteTarGzArchive(string output, string[] inputs, string baseDir = null, string prefixDir = null)
         {
             if (baseDir != null)
                 baseDir = Path.GetFullPath(baseDir);
@@ -46,6 +46,8 @@ namespace NetTux
                     var name = info.Name;
                     if (baseDir != null)
                         name = Path.GetFullPath(file).Replace(baseDir, "").TrimStart(Path.DirectorySeparatorChar);
+                    if (prefixDir != null)
+                        name = Path.Combine(prefixDir, name);
                     var source = File.OpenRead(file);
                     var size = info.Length;
                     var modified = info.LastWriteTime;
