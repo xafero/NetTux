@@ -1,0 +1,1 @@
+c:\ikvm\bin\ikvmc -target:library commons-compress-1.14.jar dec-0.1.2.jar xz-1.6.jar
