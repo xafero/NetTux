@@ -91,8 +91,11 @@ namespace NetTux
                     continue;
                 dirs.Add(current);
                 var entry = TarEntry.CreateTarEntry(current);
-                TarEntry.NameTarHeader(entry.TarHeader, current);
-                entry.TarHeader.Mode = Convert.ToInt32("000" + "755", 8);
+                var header = entry.TarHeader;
+                TarEntry.NameTarHeader(header, current);
+                header.GroupName = "root";
+                header.UserName = "root";
+                header.Mode = Convert.ToInt32("000" + "755", 8);
                 tar.PutNextEntry(entry);
                 tar.CloseEntry();
             }
