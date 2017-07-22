@@ -53,8 +53,6 @@ namespace NetTux
             // Collect control stuff
             var control = Path.Combine(temp, "control");
             Debian.WriteControl(control, config, enc);
-            var md5sums = Path.Combine(temp, "md5sums");
-            Debian.WriteHashes(md5sums, config, enc);
             var postinst = Path.Combine(temp, "postinst");
             Debian.WriteScript(postinst, config, enc, new[]
             {
@@ -75,7 +73,7 @@ namespace NetTux
             var controlTgz = Path.Combine(temp, "control.tar.gz");
             WriteTarGzArchive(controlTgz, new TarInput
             {
-                Files = new[] { control, md5sums, postinst, postrm },
+                Files = new[] { control, postinst, postrm },
                 InstallDir = Path.Combine(".")
             });
             // Write version
