@@ -30,7 +30,8 @@ namespace NetTux
             var enc = new UTF8Encoding(false);
             // Write data stuff
             var dataTgz = Path.Combine(temp, "data.tar.gz");
-            WriteTarGzArchive(dataTgz, "NetTux.exe.config");
+            var dataFiles = Directory.GetFiles(config.BuildDirectory, "*.*", SearchOption.AllDirectories);
+            WriteTarGzArchive(dataTgz, dataFiles);
             // Collect control stuff
             var control = Path.Combine(temp, "control");
             Debian.WriteControl(control, config, enc);
