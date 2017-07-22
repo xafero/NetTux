@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 using static NetTux.Archiver;
@@ -9,9 +11,19 @@ namespace NetTux
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static int Main(string[] parms)
         {
-            var temp = "tmp";
+            if (parms.Length != 1)
+            {
+                Console.WriteLine("Usage: [json-file]");
+                return -1;
+            }
+            var set = new JsonSerializerSettings();
+            var text = File.ReadAllText(parms.First(), Encoding.UTF8);
+            var config = JsonConvert.DeserializeObject<TuxConfig>(text, set);
+            config.BuildDirectory = Environment.GetEnvironmentVariable("BUILD_DMG") ?? config.BuildDirectory;
+
+            var temp = config.AppTemp;
             Directory.CreateDirectory(temp);
 
             var enc = Encoding.UTF8;
@@ -19,14 +31,26 @@ namespace NetTux
             var dataTgz = Path.Combine(temp, "data.tar.gz");
             WriteTarGzArchive(dataTgz, "NetTux.exe.config");
 
+            var control = Path.Combine(temp, "control");
+            Debian.WriteControl(control, config);
+
+            var md5sums = Path.Combine(temp, "md5sums");
+            Debian.WriteHashes(md5sums, config);
+
+            var postinst = Path.Combine(temp, "postinst");
+            Debian.WriteScript(postinst, config);
+
+            var postrm = Path.Combine(temp, "postrm");
+            Debian.WriteScript(postrm, config);
+
             var controlTgz = Path.Combine(temp, "control.tar.gz");
-            WriteTarGzArchive(controlTgz, "control");
+            WriteTarGzArchive(controlTgz, control, md5sums, postinst, postrm);
 
             var binaryFile = Path.Combine(temp, "debian-binary");
             File.WriteAllText(binaryFile, "2.0", enc);
 
             var debFile = Path.Combine("test.deb");
             WriteArFile(debFile, binaryFile, controlTgz, dataTgz);
-        }        
+        }
     }
 }
