@@ -8,6 +8,7 @@ using static NetTux.Archiver;
 
 using File = System.IO.File;
 using System.Collections.Generic;
+using SharpCompress.Compressors.Deflate;
 
 namespace NetTux
 {
@@ -44,9 +45,13 @@ namespace NetTux
             var docRoot = Path.Combine(".", "usr", "share", "doc", lowerPkgName);
             var copyright = Path.Combine(temp, "copyright");
             Debian.WriteScript(copyright, config, enc, GenerateCopyright(config));
+            var changelogTxt = Path.Combine(temp, "changelog");
+            Debian.WriteScript(changelogTxt, config, enc, GenerateChangelog(config));
+            var changelog = Path.Combine(temp, "changelog.gz");
+            WriteGzArchive(changelog, changelogTxt);
             var metaStuff = new TarInput
             {
-                Files = new[] { copyright },
+                Files = new[] { copyright, changelog },
                 InstallDir = docRoot,
             };
             WriteTarGzArchive(dataTgz, metaStuff, dataStuff);
@@ -86,6 +91,20 @@ namespace NetTux
             return 0;
         }
 
+        static IEnumerable<string> GenerateChangelog(TuxConfig config)
+        {
+            return new[]
+            {
+                $"{config.PkgName.ToLowerInvariant()} ({config.Version}) unstable; urgency=low",
+                "",
+                $"  [ {config.Maintainer} ]",
+                 "  * Ported to Linux",
+                 "",
+                $" -- {config.Maintainer}  Wed, 12 Oct 2016 15:47:44 +0200",
+                ""
+            };
+        }
+
         static IEnumerable<string> GenerateCopyright(TuxConfig config)
         {
             return new[]
@@ -96,7 +115,8 @@ namespace NetTux
                 "",
                 "Files: *",
                 $"Copyright: 2017 {config.Maintainer}",
-                "License: Proprietary"
+                "License: Proprietary",
+                ""
             };
         }
     }

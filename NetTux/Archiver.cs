@@ -35,6 +35,14 @@ namespace NetTux
             }
         }
 
+        public static void WriteGzArchive(string output, string input)
+        {
+            using (var inp = File.OpenRead(input))
+            using (var stream = File.Create(output))
+            using (var gzip = new GZipStream(stream, CompressionMode.Compress) { LastModified = null })
+                inp.CopyTo(gzip);
+        }
+
         public static void WriteTarGzArchive(string output, params TarInput[] bunches)
         {
             var dirs = new HashSet<string>();
