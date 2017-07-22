@@ -6,9 +6,8 @@ namespace NetTux
 {
     public static class Debian
     {
-        public static void WriteControl(string path, TuxConfig config)
+        public static void WriteControl(string path, TuxConfig config, Encoding enc)
         {
-            var enc = Encoding.UTF8;
             var lines = new List<string>();
             Add(lines, "Package", config.PkgName);
             Add(lines, "Version", config.Version);
@@ -22,15 +21,13 @@ namespace NetTux
             File.WriteAllLines(path, lines, enc);
         }
 
-        public static void WriteScript(string path, TuxConfig config)
+        public static void WriteScript(string path, TuxConfig config, Encoding enc)
         {
-            var enc = Encoding.UTF8;
             File.WriteAllText(path, "", enc);
         }
 
-        public static void WriteHashes(string path, TuxConfig config)
+        public static void WriteHashes(string path, TuxConfig config, Encoding enc)
         {
-            var enc = Encoding.UTF8;
             File.WriteAllText(path, "", enc);
         }
 
