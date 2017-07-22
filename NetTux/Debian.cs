@@ -17,7 +17,7 @@ namespace NetTux
             Add(lines, "Section", "gnome");
             Add(lines, "Priority", "optional");
             Add(lines, "Homepage", config.Homepage);
-            Add(lines, "Description", config.Description);
+            Add(lines, "Description", config.Description.Replace('|' + "", '\n' + " "));
             File.WriteAllLines(path, lines, enc);
         }
 
