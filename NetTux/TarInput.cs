@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NetTux
+﻿namespace NetTux
 {
     public class TarInput
     {

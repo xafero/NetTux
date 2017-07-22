@@ -1,6 +1,4 @@
-﻿using SharpCompress.Common;
-using SharpCompress.Writers;
-using System.IO;
+﻿using System.IO;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors;
 using org.apache.commons.compress.archivers.ar;
@@ -71,7 +69,7 @@ namespace NetTux
                         var modified = info.LastWriteTime;
                         var entry = TarEntry.CreateEntryFromFile(file);
                         var header = entry.TarHeader;
-                        header.Name = name;
+                        header.Name = FixSlash(name);
                         header.Size = size;
                         header.ModTime = modified;
                         header.GroupName = "root";
@@ -104,9 +102,9 @@ namespace NetTux
                 if (dirs.Contains(current))
                     continue;
                 dirs.Add(current);
-                var entry = TarEntry.CreateTarEntry(current);
+                var entry = TarEntry.CreateTarEntry(FixSlash(current));
                 var header = entry.TarHeader;
-                TarEntry.NameTarHeader(header, current);
+                TarEntry.NameTarHeader(header, FixSlash(current));
                 header.GroupName = "root";
                 header.UserName = "root";
                 header.Mode = Convert.ToInt32("000" + "755", 8);
@@ -114,5 +112,7 @@ namespace NetTux
                 tar.CloseEntry();
             }
         }
+
+        static string FixSlash(string name) => name.Replace('\\', '/');
     }
 }

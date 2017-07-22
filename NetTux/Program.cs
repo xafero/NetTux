@@ -8,7 +8,6 @@ using static NetTux.Archiver;
 
 using File = System.IO.File;
 using System.Collections.Generic;
-using SharpCompress.Compressors.Deflate;
 
 namespace NetTux
 {
