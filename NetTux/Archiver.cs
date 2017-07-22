@@ -32,8 +32,10 @@ namespace NetTux
             }
         }
 
-        public static void WriteTarGzArchive(string output, params string[] inputs)
+        public static void WriteTarGzArchive(string output, string[] inputs, string baseDir = null)
         {
+            if (baseDir != null)
+                baseDir = Path.GetFullPath(baseDir);
             using (var stream = File.Create(output))
             using (var gzip = new GZipStream(stream, CompressionMode.Compress, CompressionLevel.BestCompression))
             using (var tar = TarArchive.Create())
@@ -42,6 +44,8 @@ namespace NetTux
                 {
                     var info = new FileInfo(file);
                     var name = info.Name;
+                    if (baseDir != null)
+                        name = Path.GetFullPath(file).Replace(baseDir, "").TrimStart(Path.DirectorySeparatorChar);
                     var source = File.OpenRead(file);
                     var size = info.Length;
                     var modified = info.LastWriteTime;

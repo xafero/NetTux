@@ -31,7 +31,7 @@ namespace NetTux
             // Write data stuff
             var dataTgz = Path.Combine(temp, "data.tar.gz");
             var dataFiles = Directory.GetFiles(config.BuildDirectory, "*.*", SearchOption.AllDirectories);
-            WriteTarGzArchive(dataTgz, dataFiles);
+            WriteTarGzArchive(dataTgz, dataFiles, config.BuildDirectory);
             // Collect control stuff
             var control = Path.Combine(temp, "control");
             Debian.WriteControl(control, config, enc);
@@ -43,7 +43,7 @@ namespace NetTux
             Debian.WriteScript(postrm, config, enc);
             // Write control bundle
             var controlTgz = Path.Combine(temp, "control.tar.gz");
-            WriteTarGzArchive(controlTgz, control, md5sums, postinst, postrm);
+            WriteTarGzArchive(controlTgz, new[] { control, md5sums, postinst, postrm });
             // Write version
             var binaryFile = Path.Combine(temp, "debian-binary");
             File.WriteAllText(binaryFile, "2.0" + '\n', enc);
