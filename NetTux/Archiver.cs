@@ -61,7 +61,10 @@ namespace NetTux
                     header.Name = name;
                     header.Size = size;
                     header.ModTime = modified;
-                    entry.TarHeader.Mode = Convert.ToInt32("100" + "644", 8); // TODO
+                    header.GroupName = "root";
+                    header.UserName = "root";
+                    var exe = info.Name == "postinst" || info.Name == "postrm";
+                    entry.TarHeader.Mode = Convert.ToInt32("100" + (exe ? "755" : "644"), 8);
                     tar.PutNextEntry(entry);
                     using (source)
                         source.CopyTo(tar);
@@ -78,18 +81,20 @@ namespace NetTux
             for (var i = 0; i < parts.Length; i++)
             {
                 var part = parts[i];
+                if (string.IsNullOrWhiteSpace(part))
+                    continue;
                 if (i != 0)
                     path.Append(Path.DirectorySeparatorChar);
                 path.Append(part);
-                var current = path.ToString();
+                var current = path.ToString() + Path.DirectorySeparatorChar;
                 if (dirs.Contains(current))
                     continue;
                 dirs.Add(current);
-                // var entry = TarEntry.CreateTarEntry(current);
-                // TarEntry.NameTarHeader(entry.TarHeader, current);
-                // entry.TarHeader.Mode = Convert.ToInt32("000" + "777", 8); // TODO
-                // tar.PutNextEntry(entry);
-                // tar.CloseEntry();
+                var entry = TarEntry.CreateTarEntry(current);
+                TarEntry.NameTarHeader(entry.TarHeader, current);
+                entry.TarHeader.Mode = Convert.ToInt32("000" + "755", 8);
+                tar.PutNextEntry(entry);
+                tar.CloseEntry();
             }
         }
     }
