@@ -8,6 +8,8 @@ using static NetTux.Archiver;
 
 using File = System.IO.File;
 using System.Collections.Generic;
+using NetTux.Deb;
+using NetTux.Common;
 
 namespace NetTux
 {
@@ -43,9 +45,9 @@ namespace NetTux
             // Write meta stuff
             var docRoot = Path.Combine(".", "usr", "share", "doc", lowerPkgName);
             var copyright = Path.Combine(temp, "copyright");
-            Debian.WriteScript(copyright, config, enc, GenerateCopyright(config));
+            LinuxIO.WriteScript(copyright, enc, GenerateCopyright(config));
             var changelogTxt = Path.Combine(temp, "changelog");
-            Debian.WriteScript(changelogTxt, config, enc, GenerateChangelog(config));
+            LinuxIO.WriteScript(changelogTxt, enc, GenerateChangelog(config));
             var changelog = Path.Combine(temp, "changelog.gz");
             WriteGzArchive(changelog, changelogTxt);
             var metaStuff = new TarInput
@@ -58,7 +60,7 @@ namespace NetTux
             var control = Path.Combine(temp, "control");
             Debian.WriteControl(control, config, enc);
             var postinst = Path.Combine(temp, "postinst");
-            Debian.WriteScript(postinst, config, enc, new[]
+            LinuxIO.WriteScript(postinst, enc, new[]
             {
                 "#!/bin/sh",
                 "set -e",
@@ -67,7 +69,7 @@ namespace NetTux
                 "fi"
             });
             var postrm = Path.Combine(temp, "postrm");
-            Debian.WriteScript(postrm, config, enc, new[]
+            LinuxIO.WriteScript(postrm, enc, new[]
             {
                 "#!/bin/sh",
                 "set -e",

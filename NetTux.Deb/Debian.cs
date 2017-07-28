@@ -1,8 +1,11 @@
-﻿using System.Text;
-using System.IO;
+﻿using NetTux.Common;
 using System.Collections.Generic;
+using System.Text;
+using System.IO;
 
-namespace NetTux
+using static NetTux.Common.LinuxIO;
+
+namespace NetTux.Deb
 {
     public static class Debian
     {
@@ -19,22 +22,6 @@ namespace NetTux
             Add(lines, "Homepage", config.Homepage);
             Add(lines, "Description", config.Description.Replace('|' + "", '\n' + " "));
             File.WriteAllLines(path, lines, enc);
-        }
-
-        public static void WriteScript(string path, TuxConfig config, Encoding enc, IEnumerable<string> lines)
-        {
-            var text = string.Join('\n' + "", lines);
-            File.WriteAllText(path, text, enc);
-        }
-
-        public static void WriteHashes(string path, TuxConfig config, Encoding enc)
-        {
-            File.WriteAllText(path, "", enc);
-        }
-
-        static void Add(ICollection<string> lines, string key, string value)
-        {
-            lines.Add($"{key}: {value}");
         }
     }
 }

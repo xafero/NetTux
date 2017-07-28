@@ -1,5 +1,4 @@
-﻿
-namespace NetTux
+﻿namespace NetTux.Common
 {
     public class TuxConfig
     {
