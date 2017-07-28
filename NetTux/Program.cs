@@ -90,9 +90,7 @@ namespace NetTux
             return 0;
         }
 
-        static IEnumerable<string> GenerateChangelog(TuxConfig config)
-        {
-            return new[]
+        static IEnumerable<string> GenerateChangelog(TuxConfig config) => new[]
             {
                 $"{config.PkgName.ToLowerInvariant()} ({config.Version}) unstable; urgency=low",
                 "",
@@ -102,11 +100,8 @@ namespace NetTux
                 $" -- {config.Maintainer}  Wed, 12 Oct 2016 15:47:44 +0200",
                 ""
             };
-        }
 
-        static IEnumerable<string> GenerateCopyright(TuxConfig config)
-        {
-            return new[]
+        static IEnumerable<string> GenerateCopyright(TuxConfig config) => new[]
             {
                 "Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/",
                 $"Upstream-Name: {config.PkgName}",
@@ -117,6 +112,5 @@ namespace NetTux
                 "License: Proprietary",
                 ""
             };
-        }
     }
 }
