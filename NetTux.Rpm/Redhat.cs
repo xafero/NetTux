@@ -7,6 +7,8 @@ using System.Linq;
 
 using static NetTux.Common.LinuxIO;
 using File = java.io.File;
+using NetFile = System.IO.File;
+using Path = System.IO.Path;
 
 namespace NetTux.Rpm
 {
@@ -24,7 +26,7 @@ namespace NetTux.Rpm
             var summary = desc.First();
             var description = string.Join(string.Empty, desc.Skip(1));
             var include = new Contents();
-            include.addDirectory(cfg.BuildDirectory);
+            // include.addDirectory(cfg.BuildDirectory);
             var builder = new Builder();
             builder.setPackage(cfg.PkgName, cfg.Version, release);
             builder.setType(RpmType.BINARY);
@@ -39,7 +41,9 @@ namespace NetTux.Rpm
             builder.setUrl(cfg.Homepage);
             builder.setProvides(cfg.PkgName);
             builder.setFiles(include);
-            builder.build(destination);
+            var tmpFileName = Path.Combine(cfg.AppTemp, builder.build(destination));
+            var fileName = $"{cfg.PackageFile}.rpm";
+            NetFile.Copy(tmpFileName, fileName);
         }
     }
 }
