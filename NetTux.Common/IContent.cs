@@ -6,7 +6,7 @@
 
         string Path { get; }
 
-        int Permissions { get; }
+        int? Permissions { get; }
 
         string User { get; }
 

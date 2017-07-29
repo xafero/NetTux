@@ -7,10 +7,11 @@ using java.io;
 using File = System.IO.File;
 using org.apache.commons.compress.utils;
 using ICSharpCode.SharpZipLib.Tar;
-using System;
 using System.Collections.Generic;
 using System.Text;
 using NetTux.Common;
+
+using static NetTux.Common.LinuxIO;
 
 namespace NetTux
 {
@@ -75,8 +76,7 @@ namespace NetTux
                         header.ModTime = modified;
                         header.GroupName = "root";
                         header.UserName = "root";
-                        var exe = info.Name == "postinst" || info.Name == "postrm";
-                        entry.TarHeader.Mode = Convert.ToInt32("100" + (exe ? "755" : "644"), 8);
+                        entry.TarHeader.Mode = GetPermissions(info.Name, true);
                         tar.PutNextEntry(entry);
                         using (source)
                             source.CopyTo(tar);
@@ -108,12 +108,10 @@ namespace NetTux
                 TarEntry.NameTarHeader(header, FixSlash(current));
                 header.GroupName = "root";
                 header.UserName = "root";
-                header.Mode = Convert.ToInt32("000" + "755", 8);
+                header.Mode = GetPermissions(entry.Name, false);
                 tar.PutNextEntry(entry);
                 tar.CloseEntry();
             }
         }
-
-        static string FixSlash(string name) => name.Replace('\\', '/');
     }
 }

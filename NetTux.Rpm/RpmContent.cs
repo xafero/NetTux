@@ -9,7 +9,7 @@ namespace NetTux.Rpm
     {
         public string Path { get; set; }
         public string Source { get; set; }
-        public int Permissions { get; }
+        public int? Permissions { get; }
         public string Group { get; set; }
         public string User { get; set; }
 

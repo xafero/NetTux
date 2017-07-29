@@ -2,6 +2,8 @@
 using NetTux.Common;
 using java.io;
 
+using static NetTux.Common.LinuxIO;
+
 namespace NetTux.Rpm
 {
     public class RpmContents
@@ -18,8 +20,10 @@ namespace NetTux.Rpm
             var source = new File(c.Source);
             var directive = Directive.NONE;
             const bool addParents = true;
-            const int dirMode = 0;
-            _includes.addFile(c.Path, source, c.Permissions, directive, c.User, c.Group, dirMode, addParents);
+            var path = FixSlash(c.Path);
+            var permissions = c.Permissions ?? GetPermissions(path, true);
+            var dirMode = GetPermissions(path, false);
+            _includes.addFile(path, source, permissions, directive, c.User, c.Group, dirMode, addParents);
         }
     }
 }

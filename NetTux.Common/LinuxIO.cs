@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System;
 
 namespace NetTux.Common
 {
@@ -24,5 +25,15 @@ namespace NetTux.Common
 
         public static string FormatDesc(string description)
             => description.Replace('|' + "", '\n' + " ");
+
+        public static string FixSlash(string name) => name.Replace('\\', '/');
+
+        public static int GetPermissions(string name, bool isFile)
+        {
+            if (!isFile)
+                return Convert.ToInt32("000" + "755", 8);
+            var exe = name == "postinst" || name == "postrm";
+            return Convert.ToInt32("100" + (exe ? "755" : "644"), 8);
+        }
     }
 }
