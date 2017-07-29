@@ -32,8 +32,6 @@ namespace NetTux
             var temp = config.AppTemp;
             Directory.CreateDirectory(temp);
             var enc = new UTF8Encoding(false);
-            // Generate RedHat stuff
-            Redhat.CreateRpm(config);
             // Write data stuff
             var dataTgz = Path.Combine(temp, "data.tar.gz");
             var dataFiles = Directory.GetFiles(config.BuildDirectory, "*.*", SearchOption.AllDirectories);
@@ -58,6 +56,9 @@ namespace NetTux
                 Files = new[] { copyright, changelog },
                 InstallDir = docRoot,
             };
+            // Generate RPM data package           
+            Redhat.Create(config, RpmContent.Wrap(metaStuff), RpmContent.Wrap(dataStuff));
+            // Generate DEB data package
             WriteTarGzArchive(dataTgz, metaStuff, dataStuff);
             // Collect control stuff
             var control = Path.Combine(temp, "control");

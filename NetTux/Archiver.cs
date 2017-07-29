@@ -10,6 +10,7 @@ using ICSharpCode.SharpZipLib.Tar;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NetTux.Common;
 
 namespace NetTux
 {

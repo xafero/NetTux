@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="IContent.cs" />
     <Compile Include="LinuxIO.cs" />
+    <Compile Include="TarInput.cs" />
     <Compile Include="TuxConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -4,7 +4,7 @@ using java.io;
 
 namespace NetTux.Rpm
 {
-    class RpmContents
+    public class RpmContents
     {
         readonly Contents _includes;
 
