@@ -89,7 +89,7 @@ namespace NetTux
             var binaryFile = Path.Combine(temp, "debian-binary");
             File.WriteAllText(binaryFile, "2.0" + '\n', enc);
             // Write Debian package
-            var debFile = config.PackageFile;
+            var debFile = $"{config.PackageFile}.deb";
             WriteArFile(debFile, binaryFile, controlTgz, dataTgz);
             // Done
             return 0;
