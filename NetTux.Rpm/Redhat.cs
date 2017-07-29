@@ -43,7 +43,7 @@ namespace NetTux.Rpm
             builder.setFiles(include);
             var tmpFileName = Path.Combine(cfg.AppTemp, builder.build(destination));
             var fileName = $"{cfg.PackageFile}.rpm";
-            NetFile.Copy(tmpFileName, fileName);
+            NetFile.Copy(tmpFileName, fileName, true);
         }
     }
 }
