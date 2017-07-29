@@ -21,5 +21,8 @@ namespace NetTux.Common
         {
             lines.Add($"{key}: {value}");
         }
+
+        public static string FormatDesc(string description)
+            => description.Replace('|' + "", '\n' + " ");
     }
 }

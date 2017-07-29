@@ -75,6 +75,10 @@
       <Project>{51E972C8-4F25-4A2F-8418-BFBDF92ECF48}</Project>
       <Name>NetTux.Deb</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NetTux.Rpm\NetTux.Rpm.csproj">
+      <Project>{491D5C91-5B95-4BAC-88BB-6F70A5F73CC3}</Project>
+      <Name>NetTux.Rpm</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

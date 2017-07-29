@@ -10,6 +10,7 @@ using File = System.IO.File;
 using System.Collections.Generic;
 using NetTux.Deb;
 using NetTux.Common;
+using NetTux.Rpm;
 
 namespace NetTux
 {
@@ -31,6 +32,8 @@ namespace NetTux
             var temp = config.AppTemp;
             Directory.CreateDirectory(temp);
             var enc = new UTF8Encoding(false);
+            // Generate RedHat stuff
+            Redhat.CreateRpm(config);
             // Write data stuff
             var dataTgz = Path.Combine(temp, "data.tar.gz");
             var dataFiles = Directory.GetFiles(config.BuildDirectory, "*.*", SearchOption.AllDirectories);

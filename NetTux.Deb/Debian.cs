@@ -20,7 +20,7 @@ namespace NetTux.Deb
             Add(lines, "Section", "gnome");
             Add(lines, "Priority", "optional");
             Add(lines, "Homepage", config.Homepage);
-            Add(lines, "Description", config.Description.Replace('|' + "", '\n' + " "));
+            Add(lines, "Description", FormatDesc(config.Description));
             File.WriteAllLines(path, lines, enc);
         }
     }
