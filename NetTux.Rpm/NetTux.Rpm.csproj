@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Redhat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RpmContent.cs" />
+    <Compile Include="RpmContents.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetTux.Common\NetTux.Common.csproj">

@@ -33,6 +33,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IContent.cs" />
     <Compile Include="LinuxIO.cs" />
     <Compile Include="TuxConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
